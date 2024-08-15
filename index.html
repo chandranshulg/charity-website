@@ -75,7 +75,8 @@
 
         input[type="text"],
         input[type="email"],
-        input[type="number"] {
+        input[type="number"],
+        textarea {
             width: 100%;
             padding: 10px;
             margin-bottom: 20px;
@@ -88,14 +89,55 @@
             margin-bottom: 20px;
         }
 
+        .about-section,
+        .testimonials-section,
+        .contact-section {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: 20px auto;
+        }
+
+        .about-section h2,
+        .testimonials-section h2,
+        .contact-section h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .testimonial {
+            border-left: 5px solid #4CAF50;
+            padding-left: 10px;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            background-color: #ddd;
+            border-radius: 13px;
+            padding: 3px;
+            margin-bottom: 20px;
+        }
+
+        .progress {
+            background-color: #4CAF50;
+            width: 0;
+            height: 20px;
+            border-radius: 10px;
+            text-align: center;
+            color: white;
+            line-height: 20px;
+        }
+
         footer {
             text-align: center;
             padding: 10px;
             background-color: #333;
             color: white;
-            position: fixed;
+            position: relative;
             width: 100%;
-            bottom: 0;
         }
     </style>
 </head>
@@ -106,11 +148,21 @@
     </header>
 
     <nav>
+        <a href="#about">About Us</a>
         <a href="#donate">Donate Money</a>
         <a href="#ask">Ask for Help</a>
+        <a href="#testimonials">Testimonials</a>
+        <a href="#contact">Contact Us</a>
     </nav>
 
     <div class="container">
+        <div id="about" class="about-section">
+            <h2>About Us</h2>
+            <p>We are a non-profit organization dedicated to helping those in need. Our mission is to provide
+                financial assistance and resources to people facing difficult times. We believe in the power of
+                community and strive to make the world a better place.</p>
+        </div>
+
         <div id="donate" class="form-container">
             <h2>Donate Money</h2>
             <form id="donateForm">
@@ -122,6 +174,10 @@
 
                 <label for="donationAmount">Donation Amount:</label>
                 <input type="number" id="donationAmount" name="donationAmount" required>
+
+                <div class="progress-bar">
+                    <div class="progress" id="donationProgress">0%</div>
+                </div>
 
                 <button type="button" class="button" onclick="submitDonation()">Donate</button>
             </form>
@@ -142,6 +198,34 @@
                 <button type="button" class="button" onclick="submitRequest()">Request Help</button>
             </form>
         </div>
+
+        <div id="testimonials" class="testimonials-section">
+            <h2>Testimonials</h2>
+            <div class="testimonial">
+                <p>"Thanks to Charity for Everyone, I was able to pay for my medical bills. I'm forever grateful!" - John
+                    Doe</p>
+            </div>
+            <div class="testimonial">
+                <p>"I donated to this charity, and I'm glad to see my money being used for such a great cause." - Jane
+                    Smith</p>
+            </div>
+        </div>
+
+        <div id="contact" class="contact-section">
+            <h2>Contact Us</h2>
+            <form id="contactForm">
+                <label for="contactName">Name:</label>
+                <input type="text" id="contactName" name="contactName" required>
+
+                <label for="contactEmail">Email:</label>
+                <input type="email" id="contactEmail" name="contactEmail" required>
+
+                <label for="contactMessage">Message:</label>
+                <textarea id="contactMessage" name="contactMessage" rows="4" required></textarea>
+
+                <button type="button" class="button" onclick="submitContact()">Send Message</button>
+            </form>
+        </div>
     </div>
 
     <footer>
@@ -149,12 +233,20 @@
     </footer>
 
     <script>
+        let totalDonations = 0;
+        const donationGoal = 10000;
+
         function submitDonation() {
             const donorName = document.getElementById('donorName').value;
             const donorEmail = document.getElementById('donorEmail').value;
             const donationAmount = document.getElementById('donationAmount').value;
 
             if (donorName && donorEmail && donationAmount) {
+                totalDonations += parseInt(donationAmount);
+                const progressPercentage = Math.min((totalDonations / donationGoal) * 100, 100);
+                document.getElementById('donationProgress').style.width = progressPercentage + '%';
+                document.getElementById('donationProgress').innerText = Math.round(progressPercentage) + '%';
+
                 alert(`Thank you, ${donorName}, for your generous donation of $${donationAmount}!`);
                 document.getElementById('donateForm').reset();
             } else {
@@ -170,6 +262,19 @@
             if (recipientName && recipientEmail && requestAmount) {
                 alert(`Thank you, ${recipientName}. We have received your request for $${requestAmount}. We will get back to you soon.`);
                 document.getElementById('askForm').reset();
+            } else {
+                alert('Please fill out all fields.');
+            }
+        }
+
+        function submitContact() {
+            const contactName = document.getElementById('contactName').value;
+            const contactEmail = document.getElementById('contactEmail').value;
+            const contactMessage = document.getElementById('contactMessage').value;
+
+            if (contactName && contactEmail && contactMessage) {
+                alert(`Thank you, ${contactName}. Your message has been sent. We will get back to you soon.`);
+                document.getElementById('contactForm').reset();
             } else {
                 alert('Please fill out all fields.');
             }
